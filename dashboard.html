@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZanXDarkLight - Cool</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- SETUP WARNA TEMA (VIOLET / CYBERPUNK) --- */
+        :root {
+            --bg-deep: #05020a;       /* Hitam agak ungu sangat gelap */
+            --bg-card: rgba(20, 10, 30, 0.6); /* Transparan Ungu Gelap */
+            
+            --text-main: #ffffff;
+            --text-muted: #bbb5c9;
+            
+            /* Warna Aksen diambil dari Foto */
+            --primary-purple: #7000ff;
+            --neon-pink: #ff007f;
+            --cyan-glow: #00e5ff;
+            
+            --gradient-main: linear-gradient(135deg, #7000ff 0%, #ff007f 100%);
+            --gradient-text: linear-gradient(90deg, #00e5ff, #ff007f);
+            
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glow-strong: rgba(112, 0, 255, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif; /* Font lebih techy */
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+            /* Background pattern halus */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(112, 0, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.15) 0%, transparent 40%);
+        }
+
+        /* --- ANIMASI FADE IN SAAT LOAD --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* --- HEADER & GREETING --- */
+        .user-greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            margin-bottom: 30px;
+        }
+
+        .greeting-text h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .greeting-text span {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            filter: drop-shadow(0 0 15px rgba(112,0,255,0.5));
+        }
+
+        .greeting-text p {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 18px;
+            /* Border gradient */
+            background: padding-box, border-box var(--gradient-main);
+            border: 2px solid transparent; 
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--glow-strong);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+        }
+
+        /* --- STATS GRID (KOTAK DATA) --- */
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        
+        /* Efek garis bersinar di atas kartu */
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+            opacity: 0.5;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-color: rgba(255, 0, 127, 0.3);
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        /* Warna icon spesifik */
+        .icon-crown { color: #FFD700; text-shadow: 0 0 10px #FFD700; }
+        .icon-vip { 
+            background: linear-gradient(135deg, #ff00aa 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+        }
+        .icon-user { 
+            color: var(--cyan-glow); 
+            text-shadow: 0 0 10px var(--cyan-glow); 
+        }
+        .icon-clock { color: var(--cyan-glow); text-shadow: 0 0 10px var(--cyan-glow); }
+        .icon-plane { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
+        .icon-globe { color: #be00ff; text-shadow: 0 0 10px #be00ff; }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Role badge styling */
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .owner { background: #f59e0b; color: #000; }
+        .vip { 
+            background: linear-gradient(135deg, #ff00aa 0%, #ffd700 100%);
+            color: #000; 
+            font-weight: 800;
+        }
+        .user { 
+            background: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
+            color: #000; 
+            font-weight: 800;
+        }
+
+        /* --- HERO CARD --- */
+        .hero-card {
+            width: 100%;
+            height: 180px;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hero-bg {
+            width: 100%;
+            height: 100%;
+            /* Menggunakan URL gambar user */
+            background-image: url('https://files.catbox.moe/o2tp6b.jpg'); 
+            background-size: cover;
+            background-position: center 30%; /* Sedikit digeser agar fokus */
+            filter: brightness(0.8);
+            transition: transform 5s ease;
+        }
+        
+        /* Overlay gradient agar text terbaca & menyatu dengan tema */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(5, 2, 10, 0.9), rgba(5, 2, 10, 0.2));
+            z-index: 1;
+        }
+
+        .hero-card:hover .hero-bg {
+            transform: scale(1.1);
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            z-index: 2;
+        }
+
+        .hero-tag {
+            background: var(--gradient-main);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px var(--glow-strong);
+            letter-spacing: 1px;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            line-height: 1.3;
+            margin-bottom: 5px;
+        }
+        
+        /* Teks copyright baru */
+        .hero-copyright {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+            font-weight: 500;
+        }
+
+        /* --- ROLE STATUS CARD --- */
+        .role-status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-status-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .role-status-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .vip-icon {
+            background: linear-gradient(135deg, #ff00aa 0%, #ffd700 100%);
+            color: #000;
+        }
+
+        .user-icon {
+            background: linear-gradient(135deg, #00e5ff 0%, #0088ff 100%);
+            color: #000;
+        }
+
+        .role-status-text h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .role-status-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* --- SERVER LIST --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .list-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s;
+        }
+
+        .list-item:active {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .item-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .item-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .status-badge {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            font-weight: 600;
+        }
+
+        /* --- FLOATING ACTION BUTTON (FAB) --- */
+        .fab-wrapper {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+
+        .fab-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            /* Gradient Pink Ungu */
+            background: var(--gradient-main);
+            border: none;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(255, 0, 127, 0.4);
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Kilauan pada tombol */
+        .fab-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; top: -100%; }
+            20% { left: 100%; top: 100%; }
+            100% { left: 100%; top: 100%; }
+        }
+
+        .fab-btn:active { transform: scale(0.9); }
+        .fab-btn.active { transform: rotate(45deg); background: #fff; color: #000; }
+
+        /* --- MENU OVERLAY --- */
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 2, 10, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .menu-overlay.active { opacity: 1; visibility: visible; }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 20px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.3s;
+        }
+        
+        .menu-overlay.active .menu-item { opacity: 1; transform: translateY(0); }
+        /* Staggered delay */
+        .menu-item:nth-child(1) { transition-delay: 0.1s; }
+        .menu-item:nth-child(2) { transition-delay: 0.15s; }
+        .menu-item:nth-child(3) { transition-delay: 0.2s; }
+        .menu-item:nth-child(4) { transition-delay: 0.25s; }
+        .menu-item:nth-child(5) { transition-delay: 0.3s; }
+        .menu-item:nth-child(6) { transition-delay: 0.35s; }
+
+        .menu-icon-box {
+            width: 65px;
+            height: 65px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+
+        .menu-item:hover .menu-icon-box {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: 0 0 20px var(--neon-pink);
+            transform: translateY(-5px);
+            border: none;
+        }
+
+        .menu-name {
+            font-size: 11px;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-muted);
+        }
+        .menu-item:hover .menu-name { color: white; }
+
+        /* Loading animation */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="user-greeting fade-in" style="animation-delay: 0.1s;">
+        <div class="greeting-text">
+            <p>Welcome back,</p>
+            <h2>Hi, <span id="username">Loading...</span></h2>
+        </div>
+        <div class="user-avatar">
+            <img src="https://files.catbox.moe/t0e1rn.jpg" alt="Profile">
+        </div>
+    </div>
+
+    <div class="stats-container fade-in" style="animation-delay: 0.2s;">
+        <div class="stat-card">
+            <div class="stat-icon" id="roleIcon"><i class="fas fa-user"></i></div>
+            <div class="stat-value" id="userRole">LOADING</div>
+            <div class="stat-label">Access Plan</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-clock"><i class="fas fa-hourglass-half"></i></div>
+            <div class="stat-value" id="daysLeft">0</div>
+            <div class="stat-label">Days Left</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-plane"><i class="fa-solid fa-sim-card"></i></div>
+            <div class="stat-value" id="activeSenders">0</div>
+            <div class="stat-label">Active Sender</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-globe"><i class="fas fa-globe-asia"></i></div>
+            <div class="stat-value">ID</div>
+            <div class="stat-label">Server Reg</div>
+        </div>
+    </div>
+
+    <!-- ✅ ROLE STATUS CARD -->
+    <div class="role-status-card fade-in" style="animation-delay: 0.25s;" id="roleStatusCard">
+        <div class="role-status-content">
+            <div class="role-status-icon" id="roleStatusIcon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="role-status-text">
+                <h4 id="roleStatusTitle">Loading Role...</h4>
+                <p id="roleStatusDesc">Checking your account privileges...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-card fade-in" style="animation-delay: 0.3s;">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <!-- TETAP V4.0 PRO+ TANPA PERUBAHAN -->
+            <span class="hero-tag">V1.0 PRO+</span>
+            <div class="hero-title">ZANXDARKLIGHT</div>
+            <div class="hero-copyright">© Copyright by @ZanXtzyMods</div>
+        </div>
+    </div>
+
+    <div class="section-header fade-in" style="animation-delay: 0.4s;">
+        <div class="section-title">
+            <span class="pulse-dot"></span> System Status
+        </div>
+        <span style="font-size: 11px; color: var(--text-muted);">Realtime Check</span>
+    </div>
+    
+    <div class="list-card fade-in" style="animation-delay: 0.5s;">
+        <div class="list-item">
+            <div class="item-left">
+                <div class="item-icon-box"><i class="fas fa-database" style="color: #be00ff;"></i></div>
+                <div class="item-text">
+                    <h4>Main Database</h4>
+                    <p id="dbStatus">Checking...</p>
+                </div>
+            </div>
+            <span class="status-badge" id="dbBadge">CHECK</span>
+        </div>
+        <div class="list-item">
+            <div class="item-left">
+                <div class="item-icon-box"><i class="fas fa-shield-alt" style="color: #00e5ff;"></i></div>
+                <div class="item-text">
+                    <h4>Security Guard</h4>
+                    <p id="securityStatus">Checking...</p>
+                </div>
+            </div>
+            <span class="status-badge" id="securityBadge">CHECK</span>
+        </div>
+        <div class="list-item" onclick="window.location.href='https://t.me/ZanXtzymods'">
+            <div class="item-left">
+                <div class="item-icon-box"><i class="fab fa-telegram-plane" style="color: #0088cc;"></i></div>
+                <div class="item-text">
+                    <h4>Developer</h4>
+                    <p>@ZanXtzyMods</p>
+                </div>
+            </div>
+            <i class="fas fa-chevron-right" style="font-size: 12px; color: #555;"></i>
+        </div>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-grid">
+            <a href="/dashboard" class="menu-item">
+                <div class="menu-icon-box"><i class="fas fa-home"></i></div>
+                <span class="menu-name">DASHBOARD</span>
+            </a>
+            <a href="/execution" class="menu-item">
+                <div class="menu-icon-box"><i class="fa-solid fa-biohazard"></i></div>
+                <span class="menu-name">ATTACK</span>
+            </a>
+            <a href="/my-senders" class="menu-item">
+                <div class="menu-icon-box"><i class="fa-solid fa-sim-card"></i></div>
+                <span class="menu-name">MY SENDERS</span>
+            </a>
+            <a href="/tools" class="menu-item">
+                <div class="menu-icon-box"><i class="fas fa-terminal"></i></div>
+                <span class="menu-name">TOOLS</span>
+            </a>
+            <a href="/tools" class="menu-item">
+                <div class="menu-icon-box"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <span class="menu-name">CONFIG</span>
+            </a>
+            <a href="/logout" class="menu-item">
+                <div class="menu-icon-box"><i class="fas fa-power-off"></i></div>
+                <span class="menu-name">LOGOUT</span>
+            </a>
+        </div>
+        <p style="position: absolute; bottom: 230px; color: rgba(255,255,255,0.3); font-size: 11px; letter-spacing: 1px;">ZANXDARKLIGHT V1 PRO+</p>
+    </div>
+
+    <div class="fab-wrapper">
+        <button class="fab-btn" id="fabBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <script>
+        // Logic Menu
+        const fabBtn = document.getElementById('fabBtn');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const icon = fabBtn.querySelector('i');
+
+        fabBtn.addEventListener('click', () => {
+            fabBtn.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+
+            if (fabBtn.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Close menu logic
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                fabBtn.click(); 
+            });
+        });
+
+        // ==================== DASHBOARD DATA FETCH ==================== //
+        async function fetchDashboardData() {
+            try {
+                console.log('🔄 Fetching dashboard data...');
+                const response = await fetch('/api/dashboard-data');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Dashboard data received:', data);
+                return data;
+            } catch (error) {
+                console.error('❌ Error fetching dashboard data:', error);
+                return {
+                    username: 'Guest',
+                    role: 'USER',
+                    activeSenders: 0,
+                    expired: 'Unknown',
+                    daysRemaining: 0
+                };
+            }
+        }
+
+        function updateRoleIcon(role) {
+            const roleIcon = document.getElementById('roleIcon');
+            const iconElement = roleIcon.querySelector('i');
+            
+            // Reset classes
+            iconElement.className = '';
+            
+            // Set icon based on role
+            if (role === 'OWNER') {
+                iconElement.classList.add('fas', 'fa-crown');
+                roleIcon.classList.add('icon-crown');
+                roleIcon.classList.remove('icon-vip', 'icon-user');
+            } else if (role === 'VIP') {
+                iconElement.classList.add('fas', 'fa-star');
+                roleIcon.classList.add('icon-vip');
+                roleIcon.classList.remove('icon-crown', 'icon-user');
+            } else {
+                iconElement.classList.add('fas', 'fa-user');
+                roleIcon.classList.add('icon-user');
+                roleIcon.classList.remove('icon-crown', 'icon-vip');
+            }
+        }
+
+        // ✅ FUNGSI BARU: UPDATE ROLE STATUS CARD
+        function updateRoleStatusCard(role, activeSenders) {
+            const roleStatusCard = document.getElementById('roleStatusCard');
+            const roleStatusIcon = document.getElementById('roleStatusIcon');
+            const roleStatusTitle = document.getElementById('roleStatusTitle');
+            const roleStatusDesc = document.getElementById('roleStatusDesc');
+            
+            const iconElement = roleStatusIcon.querySelector('i');
+            iconElement.className = '';
+
+            if (role === 'VIP') {
+                // Styling untuk VIP
+                roleStatusCard.style.background = 'linear-gradient(135deg, rgba(255, 0, 170, 0.1), rgba(255, 215, 0, 0.05))';
+                roleStatusCard.style.border = '1px solid rgba(255, 0, 170, 0.3)';
+                
+                roleStatusIcon.className = 'role-status-icon vip-icon';
+                iconElement.classList.add('fas', 'fa-crown');
+                
+                roleStatusTitle.innerHTML = '<b>VIP USER</b>';
+                roleStatusDesc.innerHTML = `Anda dapat menggunakan <b>${activeSenders} sender aktif</b> sistem. Akses penuh ke semua sender staff tanpa setup manual.`;
+                
+            } else {
+                // Styling untuk USER BIASA
+                roleStatusCard.style.background = 'linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(0, 136, 255, 0.05))';
+                roleStatusCard.style.border = '1px solid rgba(0, 229, 255, 0.3)';
+                
+                roleStatusIcon.className = 'role-status-icon user-icon';
+                iconElement.classList.add('fas', 'fa-user');
+                
+                roleStatusTitle.innerHTML = 'REGULAR USER';
+                roleStatusDesc.innerHTML = `Anda memiliki <b>${activeSenders} sender pribadi</b> aktif. Hanya bisa menggunakan sender yang Anda buat sendiri.`;
+            }
+        }
+
+        function updateSystemStatus(activeSenders, role) {
+            const dbStatus = document.getElementById('dbStatus');
+            const dbBadge = document.getElementById('dbBadge');
+            const securityStatus = document.getElementById('securityStatus');
+            const securityBadge = document.getElementById('securityBadge');
+
+            // Update database status based on active senders
+            if (activeSenders > 0) {
+                if (role === 'VIP') {
+                    dbStatus.textContent = `VIP Access (${activeSenders} senders)`;
+                    dbBadge.textContent = 'PREMIUM';
+                    dbBadge.style.background = 'rgba(255, 0, 170, 0.1)';
+                    dbBadge.style.color = '#ff00aa';
+                    dbBadge.style.border = '1px solid rgba(255, 0, 170, 0.2)';
+                } else {
+                    dbStatus.textContent = `Connected (${activeSenders} senders)`;
+                    dbBadge.textContent = 'ONLINE';
+                    dbBadge.style.background = 'rgba(0, 255, 136, 0.1)';
+                    dbBadge.style.color = '#00ff88';
+                    dbBadge.style.border = '1px solid rgba(0, 255, 136, 0.2)';
+                }
+            } else {
+                dbStatus.textContent = 'No active senders';
+                dbBadge.textContent = 'OFFLINE';
+                dbBadge.style.background = 'rgba(255, 0, 0, 0.1)';
+                dbBadge.style.color = '#ff4444';
+                dbBadge.style.border = '1px solid rgba(255, 0, 0, 0.2)';
+            }
+
+            // Update security status based on role
+            if (role === 'OWNER') {
+                securityStatus.textContent = 'Full System Access';
+                securityBadge.textContent = 'MAX SECURITY';
+            } else if (role === 'VIP') {
+                securityStatus.textContent = 'VIP Encrypted Access';
+                securityBadge.textContent = 'PREMIUM';
+                securityBadge.style.background = 'rgba(255, 0, 170, 0.1)';
+                securityBadge.style.color = '#ff00aa';
+                securityBadge.style.border = '1px solid rgba(255, 0, 170, 0.2)';
+            } else {
+                securityStatus.textContent = 'Standard Protection';
+                securityBadge.textContent = 'SECURE';
+            }
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            console.log('🚀 Initializing dashboard...');
+            
+            const data = await fetchDashboardData();
+            
+            // Update basic info
+            document.getElementById('username').textContent = data.username;
+            document.getElementById('userRole').textContent = data.role;
+            document.getElementById('daysLeft').textContent = data.daysRemaining;
+            document.getElementById('activeSenders').textContent = data.activeSenders;
+
+            // Update role-specific elements
+            updateRoleIcon(data.role);
+            updateRoleStatusCard(data.role, data.activeSenders); // ✅ CALL NEW FUNCTION
+            updateSystemStatus(data.activeSenders, data.role);
+
+            // Add role badge to username
+            const usernameElement = document.getElementById('username');
+            // Hapus badge lama jika ada
+            const existingBadge = usernameElement.parentNode.querySelector('.role-badge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            const roleBadge = document.createElement('span');
+            roleBadge.className = `role-badge ${data.role.toLowerCase()}`;
+            roleBadge.textContent = data.role;
+            usernameElement.parentNode.appendChild(roleBadge);
+
+            console.log('✅ Dashboard initialized successfully');
+        }
+
+        // Auto-refresh dashboard every 30 seconds
+        function startAutoRefresh() {
+            setInterval(async () => {
+                console.log('🔄 Auto-refreshing dashboard...');
+                const data = await fetchDashboardData();
+                
+                // Only update changing values
+                document.getElementById('activeSenders').textContent = data.activeSenders;
+                document.getElementById('daysLeft').textContent = data.daysRemaining;
+                
+                updateSystemStatus(data.activeSenders, data.role);
+                updateRoleStatusCard(data.role, data.activeSenders); // ✅ UPDATE ROLE CARD TOO
+            }, 30000); // 30 seconds
+        }
+
+        // Start everything when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+            startAutoRefresh();
+        });
+
+        // Error handling for failed routes
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('a')) {
+                const link = e.target.closest('a');
+                if (link.href && !link.href.startsWith('http')) {
+                    // Add loading state
+                    document.body.classList.add('loading');
+                    
+                    setTimeout(() => {
+                        document.body.classList.remove('loading');
+                    }, 2000);
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
