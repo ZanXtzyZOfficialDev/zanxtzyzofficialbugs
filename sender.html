@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Senders - INDICTIVE CORE V4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === CORE VARIABLES (CYBERPUNK THEME) === */
+        :root {
+            --bg-void: #030005;
+            --glass-surface: rgba(20, 10, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-purple: #8a2be2;
+            --neon-pink: #ff007f;
+            --neon-cyan: #00f3ff;
+            --gold-vip: #ffd700;
+            --green-connected: #00ff9d;
+            --red-disconnected: #ff0055;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --text-light: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* === BACKGROUND === */
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(at 0% 0%, rgba(138, 43, 226, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(0, 243, 255, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 0, 127, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(75, 0, 130, 0.1) 0px, transparent 50%);
+            z-index: -2;
+            filter: blur(40px);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+            mask-image: radial-gradient(circle at center, black 50%, transparent 100%);
+        }
+
+        /* === MAIN CONTAINER === */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === HEADER === */
+        .header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-purple), transparent);
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--text-main), var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        /* === VIP ACCESS - SIMPLIFIED VERSION === */
+        .vip-access-section {
+            display: none;
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(30, 20, 0, 0.95) 0%, 
+                rgba(50, 35, 0, 0.98) 50%,
+                rgba(30, 20, 0, 0.95) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px auto;
+            max-width: 600px;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 20px 60px rgba(255, 215, 0, 0.3),
+                inset 0 0 40px rgba(255, 215, 0, 0.1);
+            animation: vipEntrance 0.8s ease-out forwards;
+            overflow: hidden;
+        }
+
+        @keyframes vipEntrance {
+            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .golden-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            filter: blur(30px);
+            z-index: 1;
+        }
+
+        .vip-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1px;
+            z-index: 3;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            animation: badgePulse 2s infinite alternate;
+        }
+
+        @keyframes badgePulse {
+            0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
+        }
+
+        .vip-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .vip-icon {
+            font-size: 64px;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+            animation: iconFloat 3s infinite ease-in-out;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .vip-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #fff8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vip-subtitle {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .vip-status-card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .vip-status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vip-status-item:last-child {
+            border-bottom: none;
+        }
+
+        .vip-status-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .vip-status-value {
+            color: #ffd700;
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+        }
+
+        .vip-countdown {
+            margin-top: 25px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .vip-countdown span {
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 22px;
+            font-family: 'Orbitron', sans-serif;
+            padding: 5px 10px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            margin: 0 5px;
+            animation: countdownPulse 1s infinite alternate;
+        }
+
+        @keyframes countdownPulse {
+            0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+        }
+
+        .vip-action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .vip-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .vip-btn-gold {
+            background: linear-gradient(45deg, #ffd700, #e6c200);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .vip-btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(45deg, #ffed4e, #ffd700);
+        }
+
+        .vip-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .vip-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive untuk VIP Section */
+        @media (max-width: 768px) {
+            .vip-access-section {
+                padding: 30px 20px;
+                margin: 30px auto;
+            }
+            
+            .vip-icon {
+                font-size: 48px;
+            }
+            
+            .vip-title {
+                font-size: 22px;
+            }
+            
+            .vip-action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .vip-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* === USER CONTENT === */
+        .user-content-section {
+            background: var(--glass-surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* === TOMBOL NAVIGASI USER BIASA === */
+        .user-nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .user-nav-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .user-nav-btn-dashboard {
+            background: linear-gradient(135deg, var(--neon-purple), #6a11cb);
+            color: white;
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .user-nav-btn-dashboard:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(138, 43, 226, 0.5);
+            background: linear-gradient(135deg, #9b4dff, var(--neon-purple));
+        }
+
+        .user-nav-btn-execution {
+            background: linear-gradient(135deg, var(--neon-cyan), #00aaff);
+            color: #000;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .user-nav-btn-execution:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 243, 255, 0.5);
+            background: linear-gradient(135deg, #4dfcff, var(--neon-cyan));
+        }
+
+        /* === INSTRUCTION BOX === */
+        .instruction-box {
+            background: rgba(0, 243, 255, 0.05);
+            border-left: 3px solid var(--neon-cyan);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 30px;
+        }
+
+        .instruction-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            color: var(--neon-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instruction-box p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* === FORM SECTION === */
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 69%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            transition: 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: var(--neon-purple);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+        }
+
+        .input-field:focus + .input-icon {
+            color: var(--neon-purple);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 0, 127, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* === SENDERS LIST === */
+        .senders-section {
+            margin-top: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        .stats-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-connected { color: var(--green-connected); }
+        .stat-disconnected { color: var(--red-disconnected); }
+        .stat-total { color: var(--text-muted); }
+
+        /* === SENDERS LIST === */
+        .senders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sender-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sender-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--neon-cyan);
+            transform: translateX(5px);
+        }
+
+        .sender-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sender-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .sender-status.connected {
+            background-color: var(--green-connected);
+            box-shadow: 0 0 10px var(--green-connected);
+        }
+
+        .sender-status.disconnected {
+            background-color: var(--red-disconnected);
+            box-shadow: 0 0 10px var(--red-disconnected);
+        }
+
+        .sender-number {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .sender-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+        }
+
+        .btn-reconnect {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+        }
+
+        .btn-reconnect:hover {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+
+        .btn-delete {
+            background: rgba(255, 0, 85, 0.1);
+            color: var(--red-disconnected);
+            border: 1px solid var(--red-disconnected);
+        }
+
+        .btn-delete:hover {
+            background: var(--red-disconnected);
+            color: white;
+        }
+
+        .btn-refresh {
+            background: rgba(138, 43, 226, 0.1);
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-refresh:hover {
+            background: var(--neon-purple);
+            color: white;
+        }
+
+        /* === MODAL === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #0f0a1e, #1a0b2e);
+            border: 1px solid var(--neon-purple);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.4);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .pairing-code {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--neon-pink);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: white;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-modal {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            color: white;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 127, 0.3);
+        }
+
+        .btn-close {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* === UTILITIES === */
+        .no-senders {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-style: italic;
+            border: 1px dashed var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--neon-purple);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            animation: slideIn 0.4s ease-out;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            max-width: 400px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .user-content-section {
+                padding: 20px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .sender-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .sender-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .pairing-code {
+                font-size: 22px;
+                padding: 20px;
+            }
+            
+            .user-nav-buttons {
+                flex-direction: column;
+            }
+            
+            .user-nav-btn {
+                width: 100%;
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .stats-badge {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .btn-modal {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mesh-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- VIP ACCESS SECTION - SIMPLIFIED & ELEGANT -->
+    <div class="main-container">
+        <div class="vip-access-section" id="vipAccessSection">
+            <div class="golden-glow"></div>
+            
+            <div class="vip-badge">
+                <i class="fas fa-crown"></i> VIP USER
+            </div>
+
+            <div class="vip-container">
+                <div class="vip-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                
+                <h1 class="vip-title">PREMIUM ACCESS DETECTED</h1>
+                <p class="vip-subtitle">Your VIP status has been recognized. Enjoy exclusive system benefits.</p>
+                
+                <div class="vip-status-card">
+                    <div class="vip-status-item">
+                        <span class="vip-status-label">Access Level</span>
+                        <span class="vip-status-value">PREMIUM VIP</span>
+                    </div>
+                    <div class="vip-status-item">
+                        <span class="vip-status-label">System Access</span>
+                        <span class="vip-status-value">AUTOMATIC</span>
+                    </div>
+                    <div class="vip-status-item">
+                        <span class="vip-status-label">Priority</span>
+                        <span class="vip-status-value">HIGHEST</span>
+                    </div>
+                </div>
+                
+                <div class="vip-countdown">
+                    Redirecting in <span id="countdown">5</span> seconds
+                </div>
+                
+                <div class="vip-action-buttons">
+                    <a href="/dashboard" class="vip-btn vip-btn-gold">
+                        <i class="fas fa-home"></i> Go to Dashboard
+                    </a>
+                    <button onclick="stayOnPage()" class="vip-btn vip-btn-secondary">
+                        <i class="fas fa-times"></i> Stay Here
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- USER CONTENT -->
+        <div class="user-content" id="userContent">
+            <div class="header">
+                <h1 class="page-title">MY SENDERS</h1>
+                <p class="page-subtitle">Manage your WhatsApp sender connections</p>
+            </div>
+
+            <div class="user-content-section">
+                <!-- TOMBOL NAVIGASI UNTUK USER BIASA -->
+                <div class="user-nav-buttons">
+                    <a href="/execution" class="user-nav-btn user-nav-btn-execution">
+                        <i class="fas fa-bolt"></i> BACK TO EXECUTION
+                    </a>
+                    <a href="/dashboard" class="user-nav-btn user-nav-btn-dashboard">
+                        <i class="fas fa-home"></i> BACK TO DASHBOARD
+                    </a>
+                </div>
+
+                <div class="instruction-box">
+                    <h3><i class="fas fa-terminal"></i> SYSTEM INSTRUCTIONS</h3>
+                    <p>Enter WhatsApp number with country code (example: +1 for US, +44 for UK, +62 for Indonesia). Click "Add Sender" to generate pairing code for connection.</p>
+                    <p style="margin-top: 10px; font-size: 13px; color: var(--neon-cyan);">
+                        <i class="fas fa-globe"></i> <strong>Multi-country support:</strong> Supports all countries (min 8 digits, max 15 digits)
+                    </p>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label class="input-label">SENDER NUMBER</label>
+                        <input type="text" id="newSenderNumber" class="input-field" placeholder="Enter phone number (e.g., 1234567890)" autocomplete="off">
+                        <i class="fas fa-mobile-alt input-icon"></i>
+                    </div>
+                    <button id="addSenderBtn" class="btn-primary">
+                        <i class="fas fa-plus-circle"></i> ADD NEW SENDER
+                    </button>
+                </div>
+
+                <div class="senders-section">
+                    <div class="section-header">
+                        <h2 class="section-title">ACTIVE CONNECTIONS</h2>
+                        <div class="stats-badge">
+                            <div class="stat-item stat-connected" id="statConnected">
+                                <i class="fas fa-circle"></i>
+                                <span>0 Connected</span>
+                            </div>
+                            <div class="stat-item stat-disconnected" id="statDisconnected">
+                                <i class="fas fa-circle"></i>
+                                <span>0 Disconnected</span>
+                            </div>
+                            <div class="stat-item stat-total" id="statTotal">
+                                <i class="fas fa-list"></i>
+                                <span>Total: 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="senders-list" id="sendersList">
+                        <div class="no-senders">
+                            <i class="fas fa-plug" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <p>No active senders found</p>
+                            <p style="font-size: 13px; margin-top: 5px;">Add your first sender to begin</p>
+                        </div>
+                    </div>
+
+                    <button class="btn-refresh" onclick="loadUserSenders()">
+                        <i class="fas fa-sync-alt"></i> REFRESH SENDERS LIST
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAIRING MODAL -->
+    <div class="modal-overlay" id="pairingCodeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="fas fa-link"></i>
+                    <span id="pairingTitle">PAIRING CODE</span>
+                </h2>
+            </div>
+            
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-size: 14px;" id="pairingNumberInfo">
+                    Number: Loading...
+                </div>
+                
+                <div style="margin: 15px 0; padding: 12px; background: rgba(0, 243, 255, 0.05); border-radius: 10px; text-align: center;">
+                    <div id="pairingStatus" style="color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 14px;">
+                        <i class="fas fa-spinner fa-spin"></i> Establishing connection...
+                    </div>
+                </div>
+                
+                <div class="pairing-code" id="pairingCodeDisplay">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                
+                <div style="text-align: center; color: var(--text-light); font-size: 13px; margin-top: 10px;" id="countdownTimer">
+                    Code valid for: <span id="countdownSeconds" style="color: var(--neon-cyan; font-weight: bold;">30</span> seconds
+                </div>
+                
+                <div style="margin-top: 25px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 10px;">
+                    <h4 style="color: var(--neon-cyan); margin-bottom: 10px; font-family: 'Orbitron', sans-serif; font-size: 14px;">
+                        <i class="fas fa-list-ol"></i> PAIRING INSTRUCTIONS
+                    </h4>
+                    <ol id="instructionsList" style="padding-left: 20px; color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                        <li>Open WhatsApp on your phone</li>
+                        <li>Tap ⋮ (three dots) > Linked Devices > Link a Device</li>
+                        <li>Wait for pairing code to appear...</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-modal btn-copy" id="copyPairingBtn">
+                    <i class="fas fa-copy"></i> COPY CODE
+                </button>
+                <button class="btn-modal btn-close" id="closePairingBtn">
+                    <i class="fas fa-times"></i> CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION -->
+    <div id="notificationContainer"></div>
+
+    <script>
+        // ==================== VARIABLES ==================== //
+        let eventSource = null;
+        let pairingCountdown = null;
+        let currentPairingCode = '';
+        let autoRefreshInterval = null;
+        let redirectInterval = null;
+
+        // ==================== VIP FUNCTIONS ==================== //
+        function stayOnPage() {
+            if (redirectInterval) {
+                clearInterval(redirectInterval);
+                document.getElementById('countdown').textContent = '∞';
+                document.getElementById('countdown').style.color = '#4CAF50';
+                
+                // Update message
+                document.querySelector('.vip-countdown').innerHTML = 
+                    '<i class="fas fa-check-circle" style="color: #4CAF50; margin-right: 8px;"></i> Redirect cancelled';
+            }
+        }
+
+        // ==================== ROLE CHECK ==================== //
+        async function checkUserRole() {
+            try {
+                const response = await fetch('/api/dashboard-data');
+                if (!response.ok) throw new Error('Network error');
+                
+                const data = await response.json();
+                
+                if (data.role === 'VIP' || data.role === 'OWNER') {
+                    // VIP User: Tampilkan VIP Access Section
+                    document.getElementById('vipAccessSection').style.display = 'block';
+                    document.getElementById('userContent').style.display = 'none';
+                    
+                    // Start countdown
+                    let countdown = 5;
+                    const countdownEl = document.getElementById('countdown');
+                    redirectInterval = setInterval(() => {
+                        countdown--;
+                        countdownEl.textContent = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(redirectInterval);
+                            window.location.href = '/dashboard';
+                        }
+                    }, 1000);
+                } else {
+                    // Regular User: Tampilkan halaman sender normal
+                    document.getElementById('vipAccessSection').style.display = 'none';
+                    document.getElementById('userContent').style.display = 'block';
+                    
+                    // Tampilkan tombol navigasi untuk user biasa
+                    document.querySelector('.user-nav-buttons').style.display = 'flex';
+                    
+                    initMySenders();
+                }
+            } catch (error) {
+                console.error('Error checking role:', error);
+                // Fallback: Tampilkan halaman sender normal
+                document.getElementById('vipAccessSection').style.display = 'none';
+                document.getElementById('userContent').style.display = 'block';
+                
+                // Tampilkan tombol navigasi untuk user biasa
+                document.querySelector('.user-nav-buttons').style.display = 'flex';
+                
+                initMySenders();
+            }
+        }
+
+        // ==================== REAL-TIME EVENT HANDLER ==================== //
+        function connectToUserEvents() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+            }
+            
+            eventSource = new EventSource('/api/user-events');
+            
+            eventSource.onopen = function() {
+                console.log('[SSE] Connected to user events');
+                showNotification('Connected to real-time events', 'success');
+            };
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log('[SSE] Event received:', data.type);
+                    handleUserEvent(data);
+                } catch (e) {
+                    console.error('[SSE] Error parsing event:', e);
+                }
+            };
+            
+            eventSource.onerror = function(error) {
+                console.error('[SSE] Connection error:', error);
+                setTimeout(connectToUserEvents, 3000);
+            };
+        }
+
+        function handleUserEvent(data) {
+            switch(data.type) {
+                case 'pairing_code':
+                    showPairingCodeModal(data);
+                    break;
+                    
+                case 'qr':
+                    updatePairingStatus('Scan QR Code in WhatsApp', 'waiting');
+                    break;
+                    
+                case 'status':
+                    updatePairingStatus(data.message, data.status);
+                    break;
+                    
+                case 'connected':
+                case 'success':
+                    showNotification('Sender connected successfully');
+                    updatePairingStatus('Connected', 'connected');
+                    
+                    setTimeout(() => {
+                        closePairingModal();
+                        loadUserSenders();
+                    }, 2000);
+                    break;
+                    
+                case 'error':
+                    showNotification(data.message, 'error');
+                    updatePairingStatus(data.message, 'error');
+                    break;
+                    
+                case 'timeout':
+                    showNotification('Connection timeout, please try again', 'warning');
+                    setTimeout(closePairingModal, 2000);
+                    break;
+                    
+                case 'reconnected':
+                    showNotification('Sender reconnected automatically');
+                    loadUserSenders();
+                    break;
+                    
+                case 'disconnected':
+                    showNotification('Sender disconnected', 'warning');
+                    loadUserSenders();
+                    break;
+            }
+        }
+
+        // ==================== PAIRING MODAL FUNCTIONS ==================== //
+        function showPairingCodeModal(data) {
+            const modal = document.getElementById('pairingCodeModal');
+            const codeDisplay = document.getElementById('pairingCodeDisplay');
+            const numberInfo = document.getElementById('pairingNumberInfo');
+            
+            // Tambahkan info negara jika tersedia
+            const countryInfo = data.country ? ` (${data.country})` : '';
+            numberInfo.textContent = `Number: ${data.number}${countryInfo}`;
+            
+            currentPairingCode = data.code?.replace(/-/g, '') || '';
+            
+            const formattedCode = data.code || 'Waiting...';
+            codeDisplay.innerHTML = `<span style="font-size: 28px; letter-spacing: 3px;">${formattedCode}</span>`;
+            
+            if (data.instructions && Array.isArray(data.instructions)) {
+                const instructionsList = document.getElementById('instructionsList');
+                instructionsList.innerHTML = '';
+                data.instructions.forEach(instruction => {
+                    const li = document.createElement('li');
+                    li.textContent = instruction;
+                    instructionsList.appendChild(li);
+                });
+            }
+            
+            updatePairingStatus('Waiting for pairing...', 'waiting');
+            startPairingCountdown(30);
+            
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+            }, 10);
+        }
+
+        function updatePairingStatus(message, status) {
+            const statusElement = document.getElementById('pairingStatus');
+            if (!statusElement) return;
+            
+            statusElement.innerHTML = '';
+            
+            let icon = 'fa-spinner fa-spin';
+            let color = 'var(--neon-cyan)';
+            
+            switch(status) {
+                case 'connecting':
+                case 'reconnecting':
+                    icon = 'fa-spinner fa-spin';
+                    color = 'var(--neon-cyan)';
+                    break;
+                case 'waiting':
+                    icon = 'fa-clock';
+                    color = 'var(--gold-vip)';
+                    break;
+                case 'connected':
+                case 'success':
+                    icon = 'fa-check-circle';
+                    color = 'var(--green-connected)';
+                    break;
+                case 'error':
+                    icon = 'fa-exclamation-circle';
+                    color = 'var(--red-disconnected)';
+                    break;
+            }
+            
+            statusElement.innerHTML = `<i class="fas ${icon}" style="color: ${color}; margin-right: 8px;"></i> ${message}`;
+            statusElement.style.color = color;
+        }
+
+        function startPairingCountdown(seconds) {
+            const countdownEl = document.getElementById('countdownSeconds');
+            if (!countdownEl) return;
+            
+            let timeLeft = seconds;
+            
+            if (pairingCountdown) {
+                clearInterval(pairingCountdown);
+            }
+            
+            countdownEl.textContent = timeLeft;
+            countdownEl.style.color = 'var(--neon-cyan)';
+            
+            pairingCountdown = setInterval(() => {
+                timeLeft--;
+                countdownEl.textContent = timeLeft;
+                
+                if (timeLeft <= 10) {
+                    countdownEl.style.color = 'var(--red-disconnected)';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(pairingCountdown);
+                    document.getElementById('countdownTimer').innerHTML = 
+                        '<span style="color: var(--red-disconnected);">Code expired, please restart</span>';
+                }
+            }, 1000);
+        }
+
+        function closePairingModal() {
+            const modal = document.getElementById('pairingCodeModal');
+            modal.style.opacity = '0';
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+                if (pairingCountdown) {
+                    clearInterval(pairingCountdown);
+                }
+                currentPairingCode = '';
+                document.getElementById('pairingCodeDisplay').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                updatePairingStatus('Establishing connection...', 'connecting');
+            }, 300);
+        }
+
+        // ==================== COPY CODE FUNCTION ==================== //
+        function copyPairingCode() {
+            if (!currentPairingCode) {
+                showNotification('Pairing code not available', 'error');
+                return;
+            }
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentPairingCode)
+                    .then(() => {
+                        showNotification('Code copied to clipboard');
+                        const copyBtn = document.getElementById('copyPairingBtn');
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> COPIED';
+                        copyBtn.style.background = 'linear-gradient(135deg, var(--green-connected), #00cc66)';
+                        
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<i class="fas fa-copy"></i> COPY CODE';
+                            copyBtn.style.background = 'linear-gradient(135deg, var(--neon-purple), var(--neon-pink))';
+                        }, 2000);
+                    })
+                    .catch(() => {
+                        fallbackCopyText(currentPairingCode);
+                    });
+            } else {
+                fallbackCopyText(currentPairingCode);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('Code copied to clipboard');
+                    const copyBtn = document.getElementById('copyPairingBtn');
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> COPIED';
+                    copyBtn.style.background = 'linear-gradient(135deg, var(--green-connected), #00cc66)';
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="fas fa-copy"></i> COPY CODE';
+                        copyBtn.style.background = 'linear-gradient(135deg, var(--neon-purple), var(--neon-pink))';
+                    }, 2000);
+                } else {
+                    showNotification('Failed to copy code', 'error');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                showNotification('Browser does not support auto-copy', 'error');
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
+        // ==================== MY SENDERS LOGIC ==================== //
+        function initMySenders() {
+            loadUserSenders();
+            document.getElementById('addSenderBtn').addEventListener('click', addSender);
+            document.getElementById('newSenderNumber').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addSender();
+            });
+            
+            connectToUserEvents();
+            
+            document.getElementById('copyPairingBtn')?.addEventListener('click', copyPairingCode);
+            document.getElementById('closePairingBtn')?.addEventListener('click', closePairingModal);
+            
+            document.getElementById('pairingCodeModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closePairingModal();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePairingModal();
+                }
+            });
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            autoRefreshInterval = setInterval(loadUserSenders, 15000);
+        }
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            let icon = 'fa-info-circle';
+            let borderColor = 'var(--neon-purple)';
+            
+            if (type === 'error') {
+                icon = 'fa-exclamation-circle';
+                borderColor = 'var(--red-disconnected)';
+            } else if (type === 'warning') {
+                icon = 'fa-exclamation-triangle';
+                borderColor = 'var(--gold-vip)';
+            } else if (type === 'success') {
+                icon = 'fa-check-circle';
+                borderColor = 'var(--green-connected)';
+            }
+            
+            notification.innerHTML = `
+                <i class="fas ${icon}" style="margin-right: 10px; color: ${borderColor};"></i> 
+                ${message}
+            `;
+            notification.style.borderColor = borderColor;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        notification.parentNode.removeChild(notification);
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        // Helper function untuk flag emoji
+        function getCountryFlag(number) {
+            const cleaned = number.replace(/\D/g, '');
+            
+            // Mapping country codes to flags
+            const flagMap = {
+                '1': '🇺🇸', // US
+                '44': '🇬🇧', // UK
+                '62': '🇮🇩', // Indonesia
+                '91': '🇮🇳', // India
+                '86': '🇨🇳', // China
+                '81': '🇯🇵', // Japan
+                '82': '🇰🇷', // Korea
+                '55': '🇧🇷', // Brazil
+                '33': '🇫🇷', // France
+                '49': '🇩🇪', // Germany
+                '7': '🇷🇺', // Russia
+                '61': '🇦🇺', // Australia
+                '64': '🇳🇿', // New Zealand
+                '971': '🇦🇪', // UAE
+                '966': '🇸🇦', // Saudi Arabia
+                '20': '🇪🇬', // Egypt
+                '27': '🇿🇦', // South Africa
+            };
+            
+            // Check for country codes
+            for (let i = 4; i >= 1; i--) {
+                const code = cleaned.substring(0, i);
+                if (flagMap[code]) {
+                    return flagMap[code];
+                }
+            }
+            
+            return '🌍'; // Default global flag
+        }
+
+        function loadUserSenders() {
+            fetch('/api/my-senders')
+                .then(r => r.json())
+                .then(data => {
+                    const list = document.getElementById('sendersList');
+                    if (!data.success || !data.senders || data.senders.length === 0) {
+                        list.innerHTML = `
+                            <div class="no-senders">
+                                <i class="fas fa-plug" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
+                                <p>No active senders found</p>
+                                <p style="font-size: 13px; margin-top: 5px;">Add your first sender to begin</p>
+                            </div>`;
+                        
+                        document.getElementById('statConnected').innerHTML = '<i class="fas fa-circle"></i><span>0 Connected</span>';
+                        document.getElementById('statDisconnected').innerHTML = '<i class="fas fa-circle"></i><span>0 Disconnected</span>';
+                        document.getElementById('statTotal').innerHTML = '<i class="fas fa-list"></i><span>Total: 0</span>';
+                        return;
+                    }
+                    
+                    let connectedCount = 0;
+                    let html = '';
+                    
+                    data.senders.forEach(sender => {
+                        if (sender.connected) connectedCount++;
+                        
+                        const statusClass = sender.connected ? 'connected' : 'disconnected';
+                        const statusText = sender.connected ? 'CONNECTED' : 'DISCONNECTED';
+                        const statusColor = sender.connected ? 'var(--green-connected)' : 'var(--red-disconnected)';
+                        
+                        // Tambahkan flag emoji berdasarkan kode negara
+                        const countryFlag = getCountryFlag(sender.number);
+                        
+                        html += `
+                            <div class="sender-card">
+                                <div class="sender-info">
+                                    <div class="sender-status ${statusClass}"></div>
+                                    <div>
+                                        <div class="sender-number">${countryFlag} ${sender.number}</div>
+                                        <div style="font-size: 12px; color: ${statusColor}; margin-top: 2px;">
+                                            ${statusText}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sender-actions">
+                                    ${!sender.connected ? `
+                                        <button class="btn-action btn-reconnect" onclick="reconnectSender('${sender.number}')">
+                                            <i class="fas fa-sync-alt"></i> RECONNECT
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn-action btn-delete" onclick="deleteSender('${sender.number}')">
+                                        <i class="fas fa-trash"></i> DELETE
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    list.innerHTML = html;
+                    
+                    document.getElementById('statConnected').innerHTML = `<i class="fas fa-circle"></i><span>${connectedCount} Connected</span>`;
+                    document.getElementById('statDisconnected').innerHTML = `<i class="fas fa-circle"></i><span>${data.senders.length - connectedCount} Disconnected</span>`;
+                    document.getElementById('statTotal').innerHTML = `<i class="fas fa-list"></i><span>Total: ${data.senders.length}</span>`;
+                })
+                .catch(e => {
+                    console.error('Error loading senders:', e);
+                });
+        }
+
+        function addSender() {
+            const input = document.getElementById('newSenderNumber');
+            let number = input.value.trim().replace(/\D/g, '');
+            
+            if (!number) {
+                showNotification('Please enter WhatsApp number', 'error');
+                return;
+            }
+            
+            // Remove leading 0 if present
+            if (number.startsWith('0')) {
+                number = number.substring(1);
+                showNotification('Removed leading 0 from number', 'info');
+            }
+            
+            // Minimum 8 digits for any country
+            if (number.length < 8) {
+                showNotification('Phone number too short. Minimum 8 digits required for any country.', 'error');
+                return;
+            }
+            
+            // Maximum 15 digits (including country code)
+            if (number.length > 15) {
+                showNotification('Phone number too long. Maximum 15 digits allowed.', 'error');
+                return;
+            }
+            
+            // Validasi kode negara
+            if (!/^[1-9]\d{0,3}/.test(number)) {
+                showNotification('Invalid country code format. Number must start with a digit 1-9.', 'error');
+                return;
+            }
+            
+            const btn = document.getElementById('addSenderBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+            btn.disabled = true;
+            
+            fetch('/api/add-sender', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ number: number })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Connection process started! Multi-country sender supported.');
+                    input.value = '';
+                    
+                    const modal = document.getElementById('pairingCodeModal');
+                    modal.style.display = 'block';
+                    
+                    // Tambahkan info negara jika tersedia
+                    const countryInfo = data.country ? ` (${data.country})` : '';
+                    document.getElementById('pairingNumberInfo').textContent = `Number: ${data.number}${countryInfo}`;
+                    
+                    document.getElementById('pairingCodeDisplay').innerHTML = 
+                        '<i class="fas fa-spinner fa-spin"></i>';
+                    
+                    updatePairingStatus('Requesting pairing code...', 'connecting');
+                    
+                    setTimeout(() => {
+                        loadUserSenders();
+                    }, 20000);
+                } else {
+                    showNotification(data.error || 'Connection failed', 'error');
+                }
+            })
+            .catch(() => showNotification('Network error', 'error'))
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function reconnectSender(number) {
+            if (!confirm(`Reconnect sender ${number}?`)) return;
+            
+            showNotification(`Reconnecting ${number}...`);
+            
+            fetch('/api/reconnect-sender', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ number: number })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Sender reconnected');
+                    setTimeout(loadUserSenders, 2000);
+                } else {
+                    showNotification(data.error || 'Reconnect failed', 'error');
+                }
+            })
+            .catch(() => showNotification('Network error', 'error'));
+        }
+
+        function deleteSender(number) {
+            if (!confirm(`Delete sender ${number}? This action cannot be undone.`)) return;
+            
+            fetch('/api/delete-sender', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ number: number })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Sender deleted');
+                    loadUserSenders();
+                } else {
+                    showNotification(data.error || 'Delete failed', 'error');
+                }
+            })
+            .catch(() => showNotification('Network error', 'error'));
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', checkUserRole);
+        
+        // Cleanup
+        window.addEventListener('beforeunload', function() {
+            if (eventSource) {
+                eventSource.close();
+            }
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            if (redirectInterval) {
+                clearInterval(redirectInterval);
+            }
+        });
+    </script>
+</body>
+</html>

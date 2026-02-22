@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - ZANXDARKLIGHT</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --accent: #bc13fe;
+            --telegram: #0088cc;
+            --bg-dark: #050508;
+            --card-bg: rgba(10, 10, 16, 0.75);
+            --border: rgba(0, 243, 255, 0.2);
+            --glow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, transparent 0%, #000 120%);
+        }
+
+        .cyber-card {
+            position: relative;
+            width: 90%;
+            max-width: 450px;
+            padding: 40px 30px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(45deg, transparent, var(--primary), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .reactor-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .reactor-core {
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, #fff, var(--primary));
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--primary);
+            animation: pulseCore 2s infinite alternate;
+            z-index: 2;
+        }
+
+        .reactor-ring-1, .reactor-ring-2 {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+        }
+
+        .reactor-ring-1 {
+            width: 100%;
+            height: 100%;
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--accent);
+            animation: spin 3s linear infinite;
+        }
+
+        .reactor-ring-2 {
+            width: 75%;
+            height: 75%;
+            border-left: 2px solid var(--primary);
+            border-right: 2px solid #fff;
+            animation: spinReverse 5s linear infinite;
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        .subtitle {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .desc {
+            font-size: 15px;
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .stat-val {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-dashboard {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(188, 19, 254, 0.1));
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-dashboard:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 10px 25px rgba(0, 243, 255, 0.4);
+            transform: translateY(-3px);
+            letter-spacing: 3px;
+        }
+
+        .btn-dashboard:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .btn-dashboard:hover::before {
+            left: 100%;
+        }
+
+        .btn-telegram {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(0, 136, 204, 0.1), rgba(0, 136, 204, 0.2));
+            border: 1px solid var(--telegram);
+            color: var(--telegram);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-telegram:hover {
+            background: linear-gradient(135deg, var(--telegram), #2aabee);
+            color: white;
+            box-shadow: 0 10px 25px rgba(0, 136, 204, 0.4);
+            transform: translateY(-3px);
+            letter-spacing: 2px;
+        }
+
+        .btn-telegram:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-telegram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .btn-telegram:hover::before {
+            left: 100%;
+        }
+
+        .coming-soon-badge {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--primary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .badge-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .coming-soon-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: badgeGlow 3s infinite linear;
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeIn { 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
+        
+        @keyframes spin { 
+            to { 
+                transform: rotate(360deg); 
+            } 
+        }
+        
+        @keyframes spinReverse { 
+            to { 
+                transform: rotate(-360deg); 
+            } 
+        }
+        
+        @keyframes pulseCore { 
+            0% { 
+                transform: scale(0.95); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: scale(1.05); 
+                opacity: 1; 
+                box-shadow: 0 0 50px var(--primary); 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title { 
+                font-size: 22px; 
+            }
+            
+            .reactor-container { 
+                width: 80px; 
+                height: 80px; 
+            }
+            
+            .button-container {
+                gap: 10px;
+            }
+            
+            .btn-dashboard, 
+            .btn-telegram {
+                padding: 12px;
+                font-size: 13px;
+            }
+            
+            .coming-soon-badge {
+                padding: 12px 15px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .subtitle {
+                font-size: 12px;
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Lightweight Background Canvas -->
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="cyber-card">
+        <!-- Icon: CSS Arc Reactor -->
+        <div class="reactor-container">
+            <div class="reactor-ring-1"></div>
+            <div class="reactor-ring-2"></div>
+            <div class="reactor-core"></div>
+        </div>
+
+        <h1 class="title">INDICTIVE CORE</h1>
+        <div class="subtitle">SYSTEM OFFLINE</div>
+
+        <p class="desc">
+           ZanXDarkLight Sedang Dalam Tahap Final Development. <br>
+            Harap Bersabar, Kami Akan Segera Kembali Dengan Teknologi Terbaru.
+        </p>
+
+        <!-- Stats Mockup -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-val">12%</div>
+                <div class="stat-label">ZanXDarkLight</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val">40ms</div>
+                <div class="stat-label">Latency</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val">SECURE</div>
+                <div class="stat-label">Protocol</div>
+            </div>
+        </div>
+
+        <!-- Button Container -->
+        <div class="button-container">
+            <button class="btn-dashboard" onclick="goToDashboard()">
+                <i class="fas fa-arrow-left"></i>
+                BACK TO DASHBOARD
+            </button>
+            
+            <button class="btn-telegram" onclick="contactDeveloper()">
+                <i class="fab fa-telegram-plane"></i>
+                HUBUNGI DEVELOPER
+            </button>
+        </div>
+
+        <!-- Coming Soon Badge -->
+        <div class="coming-soon-badge">
+            <div class="badge-title">COMING SOON</div>
+            <div class="badge-desc">Fitur ini akan segera hadir</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const particles = [];
+        const particleCount = 60;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.speed = Math.random() * 0.5 + 0.1;
+                this.size = Math.random() * 1.5;
+                this.alpha = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.5 ? '#00f3ff' : '#bc13fe';
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.y < 0) this.reset();
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(${this.color === '#00f3ff' ? '0, 243, 255' : '188, 19, 254'}, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for(let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.03)';
+            ctx.lineWidth = 1;
+            const gridSize = 50;
+            
+            for(let x = 0; x < width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        
+        function goToDashboard() {
+            const btn = document.querySelector('.btn-dashboard');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REDIRECTING...';
+            btn.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+
+                window.location.href = '/dashboard';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.pointerEvents = 'auto';
+                }, 2000);
+            }, 1500);
+        }
+
+        function contactDeveloper() {
+            const btn = document.querySelector('.btn-telegram');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fab fa-telegram"></i> MEMBUKA TELEGRAM...';
+            btn.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                const telegramURL = 'https://t.me/ZanXtzyMods';
+                window.open(telegramURL, '_blank');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.pointerEvents = 'auto';
+                }, 2000);
+            }, 1500);
+        }
+
+        document.querySelectorAll('.stat-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                const val = box.querySelector('.stat-val');
+                const currentText = val.textContent;
+                
+                if (currentText.includes('%')) {
+                    const currentNum = parseInt(currentText);
+                    const targetNum = 100;
+                    
+                    let num = currentNum;
+                    const interval = setInterval(() => {
+                        if (num < targetNum) {
+                            num++;
+                            val.textContent = num + '%';
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 20);
+                    
+                    setTimeout(() => {
+                        val.textContent = currentText;
+                    }, 1000);
+                }
+            });
+        });
+
+        window.addEventListener('load', () => {
+            const reactor = document.querySelector('.reactor-container');
+            reactor.style.animation = 'none';
+            setTimeout(() => {
+                reactor.style.animation = '';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

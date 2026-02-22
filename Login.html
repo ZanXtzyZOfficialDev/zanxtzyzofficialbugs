@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZANXDARKLIGHT - ACCESS</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- CORE CONFIGURATION --- */
+        :root {
+            --primary: #8A2BE2; /* Violet */
+            --accent: #00F3FF;  /* Cyan */
+            --alert: #FF0055;   /* Pink/Red */
+            --dark-bg: #030305;
+            --panel-bg: rgba(10, 10, 16, 0.75);
+            --border: rgba(255, 255, 255, 0.1);
+            --font-tech: 'JetBrains Mono', monospace;
+            --font-display: 'Rajdhani', sans-serif;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: var(--font-display);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            position: relative;
+        }
+
+        /* --- BACKGROUND FX --- */
+        /* 1. Moving Grid Floor */
+        .cyber-grid {
+            position: fixed;
+            width: 200vw;
+            height: 200vh;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(138, 43, 226, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 10s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        /* 2. Vignette & Scanlines */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 0%, #000 90%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* === TOAST NOTIFICATION - POSISI ATAS DI TENGAH === */
+        #toast {
+            position: fixed;
+            top: 30px; /* POSISI ATAS */
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(10, 10, 16, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--alert);
+            border-top: 3px solid var(--alert);
+            color: white;
+            font-family: var(--font-tech);
+            font-size: 13px;
+            padding: 18px 30px;
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            box-shadow: 
+                0 10px 30px rgba(255, 0, 85, 0.4),
+                0 0 40px rgba(138, 43, 226, 0.2);
+            min-width: 350px;
+            max-width: 90%;
+            text-align: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+        }
+        
+        #toast.visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* Warna Toast Berdasarkan Tipe */
+        #toast.success {
+            border-color: #00ff9d;
+            border-top-color: #00ff9d;
+            box-shadow: 
+                0 10px 30px rgba(0, 255, 157, 0.4),
+                0 0 40px rgba(0, 243, 255, 0.2);
+        }
+        
+        #toast.success i {
+            color: #00ff9d;
+        }
+        
+        #toast.warning {
+            border-color: #ffd700;
+            border-top-color: #ffd700;
+            box-shadow: 
+                0 10px 30px rgba(255, 215, 0, 0.4),
+                0 0 40px rgba(255, 215, 0, 0.2);
+        }
+        
+        #toast.warning i {
+            color: #ffd700;
+        }
+        
+        #toast.info {
+            border-color: var(--accent);
+            border-top-color: var(--accent);
+            box-shadow: 
+                0 10px 30px rgba(0, 243, 255, 0.4),
+                0 0 40px rgba(138, 43, 226, 0.2);
+        }
+        
+        #toast.info i {
+            color: var(--accent);
+        }
+        
+        #toast.error {
+            border-color: var(--alert);
+            border-top-color: var(--alert);
+            box-shadow: 
+                0 10px 30px rgba(255, 0, 85, 0.4),
+                0 0 40px rgba(255, 0, 127, 0.2);
+        }
+        
+        #toast.error i {
+            color: var(--alert);
+        }
+
+        /* --- LOGIN CARD --- */
+        .login-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            margin-top: 40px; /* Beri ruang untuk notifikasi di atas */
+        }
+
+        .cyber-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-top: 1px solid rgba(255,255,255,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-radius: 4px; /* Sudut lebih tajam untuk kesan tech */
+            padding: 40px 30px;
+            box-shadow: 
+                0 0 40px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(0, 243, 255, 0.1);
+            position: relative;
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%
+            ); /* Potongan sudut di kanan bawah */
+        }
+
+        /* Corner accents */
+        .cyber-card::before, .cyber-card::after {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            border: 2px solid var(--accent);
+            transition: 0.3s;
+            opacity: 0.5;
+        }
+        .cyber-card::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+        .cyber-card::after { bottom: 0; right: 0; border-left: none; border-top: none; opacity: 0; } /* Hidden due to clip-path, aesthetic only */
+
+        /* --- TYPOGRAPHY & GLITCH --- */
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-circle {
+            width: 80px; height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 2px dashed var(--border);
+            padding: 4px;
+            position: relative;
+            animation: spinSlow 20s linear infinite;
+        }
+        
+        .logo-circle img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            animation: spinReverse 20s linear infinite; /* Counter rotate to keep image upright */
+        }
+
+        @keyframes spinSlow { 100% { transform: rotate(360deg); } }
+        @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+
+        .glitch-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 36px;
+            letter-spacing: 4px;
+            color: white;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 0 10px var(--primary);
+            position: relative;
+        }
+
+        .status-text {
+            font-family: var(--font-tech);
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 5px;
+            height: 20px; /* Fixed height to prevent jump */
+            display: block;
+        }
+
+        /* --- FORMS --- */
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            font-family: var(--font-tech);
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .custom-input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--border);
+            padding: 14px 15px;
+            color: white;
+            font-family: var(--font-tech);
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .custom-input:focus {
+            background: rgba(138, 43, 226, 0.05);
+            border-color: var(--accent);
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        /* --- BUTTON --- */
+        .btn-cy {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 15px;
+            font-family: var(--font-tech);
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-cy::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: var(--primary);
+            transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: -1;
+        }
+
+        .btn-cy:hover {
+            color: white;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+        }
+        
+        .btn-cy:hover::before {
+            left: 0;
+        }
+
+        /* --- FOOTER DECORATION --- */
+        .sys-info {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-tech);
+            font-size: 9px;
+            color: rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 15px;
+        }
+
+        /* --- JS GLITCH EFFECT HELPER CLASS --- */
+        .dud { color: var(--alert); opacity: 0.7; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .login-wrapper {
+                max-width: 90%;
+                margin-top: 60px; /* Lebih banyak ruang untuk notifikasi di mobile */
+            }
+            
+            #toast {
+                top: 20px;
+                min-width: 300px;
+                padding: 15px 20px;
+                font-size: 12px;
+                max-width: 95%;
+            }
+            
+            .cyber-card {
+                padding: 30px 20px;
+            }
+            
+            .glitch-title {
+                font-size: 28px;
+                letter-spacing: 3px;
+            }
+            
+            .logo-circle {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #toast {
+                top: 15px;
+                min-width: 280px;
+                padding: 12px 15px;
+                font-size: 11px;
+                gap: 10px;
+            }
+            
+            .login-wrapper {
+                margin-top: 50px;
+                padding: 15px;
+            }
+            
+            .cyber-card {
+                padding: 25px 15px;
+            }
+            
+            .glitch-title {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+            
+            .btn-cy {
+                padding: 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cyber-grid"></div>
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+
+    <!-- TOAST NOTIFICATION - POSISI ATAS -->
+    <div id="toast">
+        <i class="fas fa-times-circle"></i>
+        <span id="toastMsg">ACCESS DENIED</span>
+    </div>
+
+    <div class="login-wrapper" id="tiltCard">
+        <div class="cyber-card">
+            
+            <div class="header">
+                <div class="logo-circle">
+                    <img src="https://files.catbox.moe/ygcufo.jpg" alt="Core">
+                </div>
+                <h1 class="glitch-title" id="mainTitle">ZANXDARKLIGHT</h1>
+                <span class="status-text" id="statusText">SYSTEM INITIALIZED</span>
+            </div>
+
+            <form method="POST" action="/auth" id="loginForm">
+                <div class="input-group">
+                    <label>Identification</label>
+                    <input type="text" name="username" class="custom-input" placeholder="USR-ID" autocomplete="off" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Security Key</label>
+                    <input type="password" name="key" class="custom-input" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-cy">
+                    <i class="fas fa-terminal" style="margin-right:8px"></i> Execute
+                </button>
+            </form>
+
+            <div class="sys-info">
+                <span>_V1.0_Pro+</span>
+                <span>SYSTEM: ENCRYPTED</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 1. THE DECODE/HACKER TEXT EFFECT ---
+        class TextScramble {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#%_£__€π_';
+                this.update = this.update.bind(this);
+            }
+
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => this.resolve = resolve);
+                
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+
+            update() {
+                let output = '';
+                let complete = 0;
+
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span class="dud">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+
+                this.el.innerHTML = output;
+
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        // --- 2. FUNGSI UNTUK TOAST NOTIFICATION ---
+        function showToast(message, type = 'error') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const icon = toast.querySelector('i');
+            
+            // Hapus semua class type sebelumnya
+            toast.className = '';
+            
+            // Set pesan
+            toastMsg.textContent = message.toUpperCase();
+            
+            // Set tipe dan icon
+            switch(type) {
+                case 'success':
+                    toast.classList.add('success');
+                    icon.className = 'fas fa-check-circle';
+                    break;
+                case 'warning':
+                    toast.classList.add('warning');
+                    icon.className = 'fas fa-exclamation-triangle';
+                    break;
+                case 'info':
+                    toast.classList.add('info');
+                    icon.className = 'fas fa-info-circle';
+                    break;
+                default:
+                    toast.classList.add('error');
+                    icon.className = 'fas fa-times-circle';
+            }
+            
+            // Tampilkan toast
+            toast.classList.add('visible');
+            
+            // Auto-hide setelah 5 detik
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 5000);
+        }
+
+        // --- 3. INITIALIZE EFFECTS ---
+        const titleEl = document.querySelector('#mainTitle');
+        const statusEl = document.querySelector('#statusText');
+        
+        const fxTitle = new TextScramble(titleEl);
+        const fxStatus = new TextScramble(statusEl);
+
+        // Awal mula
+        setTimeout(() => {
+            fxTitle.setText('ZANXDARKLIGHT');
+        }, 500);
+
+        // Loop Status Text
+        const phrases = [
+            'AWAITING INPUT...',
+            'ENCRYPTED CONNECTION',
+            'CHECKING PROTOCOLS',
+            'SYSTEM READY'
+        ];
+        let phraseIndex = 0;
+
+        const nextPhrase = () => {
+            fxStatus.setText(phrases[phraseIndex]).then(() => {
+                setTimeout(nextPhrase, 3000);
+            });
+            phraseIndex = (phraseIndex + 1) % phrases.length;
+        };
+        nextPhrase();
+
+        // --- 4. 3D TILT EFFECT ---
+        const card = document.getElementById('tiltCard');
+        const cardInner = document.querySelector('.cyber-card');
+
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 40;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 40;
+            
+            const clampX = Math.max(-10, Math.min(10, xAxis));
+            const clampY = Math.max(-10, Math.min(10, yAxis));
+
+            cardInner.style.transform = `rotateY(${clampX}deg) rotateX(${clampY}deg)`;
+        });
+
+        // Reset transform saat mouse keluar
+        document.addEventListener('mouseleave', () => {
+            cardInner.style.transform = 'rotateY(0deg) rotateX(0deg)';
+        });
+
+        // --- 5. FORM HANDLING ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const msg = urlParams.get('msg');
+        
+        if (msg) {
+            // Deteksi tipe pesan berdasarkan isi
+            let type = 'error';
+            const msgLower = msg.toLowerCase();
+            
+            if (msgLower.includes('berhasil') || msgLower.includes('success') || msgLower.includes('logout') || msgLower.includes('terhubung')) {
+                type = 'success';
+            } else if (msgLower.includes('warning') || msgLower.includes('perhatian') || msgLower.includes('expired') || msgLower.includes('segera')) {
+                type = 'warning';
+            } else if (msgLower.includes('info') || msgLower.includes('information') || msgLower.includes('silakan') || msgLower.includes('proses')) {
+                type = 'info';
+            }
+            
+            showToast(msg, type);
+        }
+
+        // Form submission effect
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const btn = this.querySelector('button');
+            const originalText = btn.innerHTML;
+            
+            // Simpan width asli agar tidak berubah
+            btn.style.width = btn.offsetWidth + 'px';
+            btn.innerHTML = '<i class="fas fa-cog fa-spin"></i> PROCESSING';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+            
+            // Reset setelah 5 detik jika ada error
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                btn.disabled = false;
+                btn.style.width = '';
+            }, 5000);
+        });
+
+        // --- 6. INPUT VALIDATION REAL-TIME ---
+        const usernameInput = document.querySelector('input[name="username"]');
+        const keyInput = document.querySelector('input[name="key"]');
+        
+        usernameInput.addEventListener('input', function() {
+            const value = this.value;
+            if (value.length > 0 && !/^[a-zA-Z0-9_]+$/.test(value)) {
+                this.style.borderColor = 'var(--alert)';
+                this.style.boxShadow = '0 0 10px rgba(255, 0, 85, 0.3)';
+            } else {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            }
+        });
+        
+        keyInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.style.borderColor = 'var(--accent)';
+                this.style.boxShadow = '0 0 10px rgba(0, 243, 255, 0.3)';
+            } else {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            }
+        });
+
+        // --- 7. KEYBOARD SHORTCUTS ---
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Enter untuk submit form
+            if (e.ctrlKey && e.key === 'Enter') {
+                document.getElementById('loginForm').submit();
+            }
+            
+            // Escape untuk reset form
+            if (e.key === 'Escape') {
+                usernameInput.value = '';
+                keyInput.value = '';
+                usernameInput.focus();
+                showToast('Form reset', 'info');
+            }
+        });
+
+        // Auto-focus ke username input saat page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                usernameInput.focus();
+            }, 1000);
+        });
+
+        // --- 8. NETWORK STATUS MONITORING ---
+        window.addEventListener('online', function() {
+            showToast('Connection restored', 'success');
+        });
+
+        window.addEventListener('offline', function() {
+            showToast('Connection lost - check your network', 'warning');
+        });
+
+        // --- 9. NOTIFICATION SOUND EFFECT (OPTIONAL) ---
+        function playNotificationSound(type) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Frekuensi berbeda berdasarkan tipe notifikasi
+                switch(type) {
+                    case 'success':
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        break;
+                    case 'warning':
+                        oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                        break;
+                    case 'error':
+                        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                        break;
+                    default:
+                        oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+                }
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                // AudioContext tidak support, skip saja
+                console.log('Audio not supported');
+            }
+        }
+
+        // Modifikasi showToast untuk include sound
+        const originalShowToast = showToast;
+        showToast = function(message, type = 'error') {
+            originalShowToast(message, type);
+            // Mainkan sound effect jika user mengizinkan
+            if (Notification.permission === 'granted') {
+                playNotificationSound(type);
+            }
+        };
+
+    </script>
+</body>
+</html>
